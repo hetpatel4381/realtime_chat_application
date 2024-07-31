@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs } from "@/components/ui/tabs";
 import apiClient from "@/lib/api-client";
+import { useAppStore } from "@/store";
 import { serverRoutes } from "@/utils/constants";
 import { TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useState } from "react";
@@ -12,6 +13,8 @@ import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
+
+  const { setUserInfo } = useAppStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,6 +59,7 @@ const Auth = () => {
         { withCredentials: true }
       );
       if (response.data.user.id) {
+        setUserInfo(response.data.user);
         if (response.data.user.profileSetup) navigate("/chat");
         else navigate("/profile");
       }
@@ -72,6 +76,7 @@ const Auth = () => {
         { withCredentials: true }
       );
       if (response.status === 201) {
+        setUserInfo(response.data.user);
         navigate("/profile");
       }
     }
