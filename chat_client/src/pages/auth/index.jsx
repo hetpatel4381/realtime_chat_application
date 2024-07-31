@@ -7,9 +7,12 @@ import apiClient from "@/lib/api-client";
 import { serverRoutes } from "@/utils/constants";
 import { TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const Auth = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -52,7 +55,10 @@ const Auth = () => {
         },
         { withCredentials: true }
       );
-      console.log("This is the Response: ", response);
+      if (response.data.user.id) {
+        if (response.data.user.profileSetup) navigate("/chat");
+        else navigate("/profile");
+      }
     }
   };
   const handleSignup = async () => {
@@ -65,7 +71,9 @@ const Auth = () => {
         },
         { withCredentials: true }
       );
-      console.log("This is the Response: ", response);
+      if (response.status === 201) {
+        navigate("/profile");
+      }
     }
   };
 
@@ -84,7 +92,7 @@ const Auth = () => {
               </p>
             </div>
             <div className="flex items-center justify-center w-full">
-              <Tabs className="w-3/4">
+              <Tabs className="w-3/4" defaultValue="login">
                 <TabsList className="flex bg-transparent w-full rounded-none">
                   <TabsTrigger
                     className="data-[state=active]:bg-transparent text-black text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:text-black data-[state-active]:font-semibold data-[state=active]:border-b-purple-500 p-3 transition-all duration-300"
