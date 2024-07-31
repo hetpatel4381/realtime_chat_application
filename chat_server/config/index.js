@@ -6,6 +6,7 @@ const _config = {
   jwtKey: process.env.JWT_SECRET_KEY,
   frontendOrigin: process.env.FRONTEND_ORIGIN,
   mongoURL: process.env.DB_URL,
+  dbName: process.env.DB_NAME,
 };
 
 export const config = Object.freeze(_config);
