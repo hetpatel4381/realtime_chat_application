@@ -1,5 +1,4 @@
-import { response } from "express";
-import User from "../models/UserModel";
+import User from "../models/UserModel.js";
 
 const signUp = async (req, res) => {
   try {
@@ -28,7 +27,7 @@ const signUp = async (req, res) => {
     }
 
     // return the response when everything is perfect.
-    return res.status(201).json(userCreated, "User Created Successfully!");
+    return res.status(201).json(userCreated);
   } catch (error) {
     console.log({ error });
     return res.status(500).send("Internal Server Error");

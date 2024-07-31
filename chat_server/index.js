@@ -3,6 +3,7 @@ import cors from "cors";
 import { config } from "./config/index.js";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
+import userRoutes from "./routes/userRoutes.js";
 
 connectDB();
 
@@ -18,6 +19,9 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
+
+// All Main Routes.
+app.use("/api/auth", userRoutes);
 
 app.listen(config.port, () => {
   console.log(`Server running on  http://localhost:${config.port}`);
