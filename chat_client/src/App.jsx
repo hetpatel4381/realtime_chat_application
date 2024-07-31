@@ -29,9 +29,19 @@ const App = () => {
         const response = await apiClient.get(serverRoutes.GET_USER_INFO, {
           withCredentials: true,
         });
+
+        if (response.status === 200 && response.data.id) {
+          setUserInfo(response.data);
+        } else {
+          setUserInfo(undefined);
+        }
+
         console.log("this is user response ", response);
       } catch (error) {
+        setUserInfo(undefined);
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     if (userInfo) {
@@ -39,7 +49,7 @@ const App = () => {
     } else {
       setLoading(false);
     }
-  }, [userInfo, setUserInfo]);
+  }, [setUserInfo]);
 
   if (loading) {
     return <div>Loading...</div>;
