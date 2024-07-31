@@ -1,5 +1,7 @@
 import User from "../models/UserModel.js";
 import { config } from "../config/index.js";
+import { compare } from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const signUp = async (req, res) => {
   try {
@@ -79,6 +81,7 @@ const logIn = async (req, res) => {
         },
       });
   } catch (error) {
+    console.log(error);
     return res.status(500).send("Error Encounter while login in User!");
   }
 };
