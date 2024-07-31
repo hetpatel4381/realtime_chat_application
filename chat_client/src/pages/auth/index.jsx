@@ -5,14 +5,35 @@ import { Input } from "@/components/ui/input";
 import { Tabs } from "@/components/ui/tabs";
 import { TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const validateSignUp = () => {
+    if (!email.length) {
+      toast.error("Email is Required!");
+      return false;
+    }
+    if (!password.length) {
+      toast.error("Password is Required!");
+      return false;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Password and Confirm-Password should be same.");
+      return false;
+    }
+    return true;
+  };
+
   const handleLogin = async () => {};
-  const handleSignup = async () => {};
+  const handleSignup = async () => {
+    if (validateSignUp()) {
+      alert("Done");
+    }
+  };
 
   return (
     <>
@@ -53,14 +74,14 @@ const Auth = () => {
                     type="email"
                     className="rounded-full p-6"
                     value={email}
-                    onClick={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <Input
                     placeholder="Password"
                     type="Password"
                     className="rounded-full p-6"
                     value={password}
-                    onClick={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <Button className="rounded-full p-6" onClick={handleLogin}>
                     Login
@@ -72,21 +93,21 @@ const Auth = () => {
                     type="email"
                     className="rounded-full p-6"
                     value={email}
-                    onClick={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <Input
                     placeholder="Password"
                     type="Password"
                     className="rounded-full p-6"
                     value={password}
-                    onClick={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <Input
                     placeholder="Confirm Password"
                     type="Password"
                     className="rounded-full p-6"
                     value={confirmPassword}
-                    onClick={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                   <Button className="rounded-full p-6" onClick={handleSignup}>
                     SignUp
