@@ -1,4 +1,5 @@
 import User from "../models/UserModel.js";
+import { config } from "../config/index.js";
 
 const signUp = async (req, res) => {
   try {
@@ -34,4 +35,52 @@ const signUp = async (req, res) => {
   }
 };
 
-export { signUp };
+const logIn = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!(email || password)) {
+      return res.status(400).send("Email Id and Password Required!");
+    }
+
+    const validUser = await User.findOne({ email });
+
+    if (!validUser) {
+      return res.status(404).send("Invalid Credentials");
+    }
+
+    const validPassword = compare(password, validUser.password);
+
+    if (!validPassword) {
+      return res.status(404).send("Invalid Credentials");
+    }
+
+    const token = jwt.sign({ id: validUser._id, email }, config.jwtKey, {
+      expiresIn: "1D",
+    });
+
+    const loggedInUser = await User.findById(validUser._id).select("-password");
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", token, options)
+      .json({
+        user: {
+          id: loggedInUser.id,
+          email: loggedInUser.email,
+          profileSetup: loggedInUser.profileSetup,
+          firstName: loggedInUser.firstName,
+          lastName: loggedInUser.lastName,
+        },
+      });
+  } catch (error) {
+    return res.status(500).send("Error Encounter while login in User!");
+  }
+};
+
+export { signUp, logIn };
