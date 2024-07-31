@@ -3,6 +3,8 @@ import Victory from "@/assets/victory.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs } from "@/components/ui/tabs";
+import apiClient from "@/lib/api-client";
+import { serverRoutes } from "@/utils/constants";
 import { TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -31,7 +33,11 @@ const Auth = () => {
   const handleLogin = async () => {};
   const handleSignup = async () => {
     if (validateSignUp()) {
-      alert("Done");
+      const response = await apiClient.post(serverRoutes.SIGNUP_ROUTE, {
+        email,
+        password,
+      });
+      console.log("This is the Response: ", response);
     }
   };
 
