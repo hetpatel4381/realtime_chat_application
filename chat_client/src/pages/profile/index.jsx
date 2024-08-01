@@ -1,5 +1,5 @@
 import { useAppStore } from "@/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 import { FaTrash, FaPlus } from "react-icons/fa";
@@ -7,6 +7,9 @@ import { Avatar } from "@radix-ui/react-avatar";
 import { AvatarImage } from "@/components/ui/avatar";
 import { colors, getColor } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import apiClient from "@/lib/api-client";
+import { serverRoutes } from "@/utils/constants";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -18,7 +21,45 @@ const Profile = () => {
   const [hovered, setHovered] = useState(false);
   const [selectedColor, setSelectedColor] = useState(0);
 
-  const saveChanges = () => {};
+  useEffect(() => {
+    if (userInfo.profileSetup) {
+      setFirstName(userInfo.firstName);
+      setLastName(userInfo.lastName);
+      setSelectedColor(userInfo.color);
+    }
+  }, [userInfo]);
+
+  const validateProfile = () => {
+    if (!firstName) {
+      toast.error("First-Name is Required!");
+      return false;
+    }
+    if (!lastName) {
+      toast.error("Last-Name is Required!");
+      return false;
+    }
+    return true;
+  };
+
+  const saveChanges = async () => {
+    if (validateProfile()) {
+      try {
+        const response = await apiClient.post(
+          serverRoutes.UPDATE_PROFILE,
+          { firstName, lastName, color: selectedColor },
+          { withCredentials: true }
+        );
+        if (response.status === 200 && response.data) {
+          setUserInfo({ ...response.data });
+          toast.success("Profile Updated Successfully!");
+          navigate("/chat");
+        }
+        console.log("This is response from Profile", response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   const handleMouseEnter = () => {
     setHovered(true);
@@ -28,10 +69,18 @@ const Profile = () => {
     setHovered(false);
   };
 
+  const handleNavigate = () => {
+    if (userInfo.profileSetup) {
+      navigate("/chat");
+    } else {
+      toast.error("Please Setup Profile!");
+    }
+  };
+
   return (
     <div className="bg-[#1b1c24] h-[100vh] flex flex-col justify-center items-center gap-10">
       <div className="flex flex-col gap-10 w-[80vw] md:w-max">
-        <div>
+        <div onClick={handleNavigate}>
           <IoArrowBack className="text-4xl lg:text-6xl text-white/90" />
         </div>
         <div className="grid grid-cols-2">

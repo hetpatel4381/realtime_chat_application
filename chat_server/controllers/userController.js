@@ -109,7 +109,8 @@ const updateProfile = async (req, res) => {
   try {
     const { userId } = req;
     const { firstName, lastName, color } = req.body;
-    if (!firstName || !lastName || !color) {
+
+    if (!firstName || !lastName || color === undefined) {
       return res
         .status(400)
         .send("First-Name, Last-Name and Color is Required!");

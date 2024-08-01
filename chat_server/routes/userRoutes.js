@@ -12,6 +12,6 @@ const userRouter = Router();
 userRouter.post("/signup", signUp);
 userRouter.post("/login", logIn);
 userRouter.get("/user-info", verifyJWT, getUserInfo);
-userRouter.get("/update-profile", verifyJWT, updateProfile);
+userRouter.post("/update-profile", verifyJWT, updateProfile);
 
 export default userRouter;
