@@ -6,6 +6,7 @@ const _serverRoutes = {
   LOGIN_ROUTE: `${AUTH_ROUTES}/login`,
   GET_USER_INFO: `${AUTH_ROUTES}/user-info`,
   UPDATE_PROFILE: `${AUTH_ROUTES}/update-profile`,
+  ADD_PROFILE_IMAGE: `${AUTH_ROUTES}/add-profile-image`,
 };
 
 export const serverRoutes = Object.freeze(_serverRoutes);
