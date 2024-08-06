@@ -106,7 +106,22 @@ const Profile = () => {
     }
   };
 
-  const handleDeleteImage = async () => {};
+  const handleDeleteImage = async () => {
+    try {
+      const response = await apiClient.delete(
+        serverRoutes.REMOVE_PROFILE_IMAGE,
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        setUserInfo({ ...userInfo, image: null });
+        toast.success("Image removed Successfully!");
+        setImage(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="bg-[#1b1c24] h-[100vh] flex flex-col justify-center items-center gap-10">
