@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import apiClient from "@/lib/api-client";
 import { serverRoutes } from "@/utils/constants";
+import { config } from "@/utils/config";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -27,6 +28,10 @@ const Profile = () => {
       setFirstName(userInfo.firstName);
       setLastName(userInfo.lastName);
       setSelectedColor(userInfo.color);
+    }
+
+    if (userInfo.image) {
+      setImage(`${config.serverOrigin}/${userInfo.image}`);
     }
   }, [userInfo]);
 
