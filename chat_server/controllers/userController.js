@@ -139,4 +139,27 @@ const updateProfile = async (req, res) => {
   }
 };
 
-export { signUp, logIn, getUserInfo, updateProfile };
+const addProfileImage = async (req, res) => {
+  try {
+  } catch (error) {
+    return res
+      .status(500)
+      .send("Something went wrong while adding profile image!");
+  }
+};
+
+const removeProfileImage = async (req, res) => {
+  try {
+  } catch (error) {
+    return res.status(500).send("Cannot delete profile image!");
+  }
+};
+
+export {
+  signUp,
+  logIn,
+  getUserInfo,
+  updateProfile,
+  addProfileImage,
+  removeProfileImage,
+};
