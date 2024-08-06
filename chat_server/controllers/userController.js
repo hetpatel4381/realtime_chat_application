@@ -2,6 +2,7 @@ import User from "../models/UserModel.js";
 import { config } from "../config/index.js";
 import { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
+import { renameSync, unlinkSync } from "fs";
 
 const signUp = async (req, res) => {
   try {
@@ -141,6 +142,21 @@ const updateProfile = async (req, res) => {
 
 const addProfileImage = async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).send("File is required!");
+    }
+
+    const date = Date.now();
+    let filename = "uploads/profiles/" + date + req.file.originalname;
+    renameSync(req.file.path, filename);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId,
+      { image: filename },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({ image: updatedUser.image });
   } catch (error) {
     return res
       .status(500)
