@@ -186,6 +186,20 @@ const removeProfileImage = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    res.cookie("accessToken", "", {
+      maxAge: 1,
+      secure: true,
+      sameSite: "None",
+    });
+
+    return res.status(200).send("Logout Successful!");
+  } catch (error) {
+    return res.status(500).send("Error while logging out the user!");
+  }
+};
+
 export {
   signUp,
   logIn,
@@ -193,4 +207,5 @@ export {
   updateProfile,
   addProfileImage,
   removeProfileImage,
+  logout,
 };

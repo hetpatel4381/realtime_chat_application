@@ -3,6 +3,7 @@ import {
   addProfileImage,
   getUserInfo,
   logIn,
+  logout,
   removeProfileImage,
   signUp,
   updateProfile,
@@ -24,5 +25,6 @@ userRouter.post(
   addProfileImage
 );
 userRouter.delete("/remove-profile-image", verifyJWT, removeProfileImage);
+userRouter.post("/logout", logout);
 
 export default userRouter;
