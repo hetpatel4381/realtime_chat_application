@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 const ProfileInfo = () => {
   const { userInfo } = useAppStore();
   const navigate = useNavigate();
+
+  const handleLogOut = async () => {};
   return (
     <div className="absolute bottom-0 h-16 flex items-center justify-center px-10 w-full bg-[#2a2b33]">
       <div className="flex gap-3 items-center justify-center">
@@ -48,7 +50,10 @@ const ProfileInfo = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <FiEdit2 onClick={() => navigate("/profile")} />
+                <FiEdit2
+                  onClick={() => navigate("/profile")}
+                  className="text-purple-500 text-xl font-medium"
+                />
               </TooltipTrigger>
               <TooltipContent className="bg-[#1c1b1e] border-none text-white">
                 <p>Edit Profile</p>
@@ -58,7 +63,10 @@ const ProfileInfo = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <IoPowerSharp onClick={() => navigate("/profile")} />
+                <IoPowerSharp
+                  onClick={handleLogOut}
+                  className="text-red-500 text-xl font-medium"
+                />
               </TooltipTrigger>
               <TooltipContent className="bg-[#1c1b1e] border-none text-white">
                 <p>Logout</p>
