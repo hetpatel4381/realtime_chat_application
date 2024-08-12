@@ -8,6 +8,7 @@ const _serverRoutes = {
   UPDATE_PROFILE: `${AUTH_ROUTES}/update-profile`,
   ADD_PROFILE_IMAGE: `${AUTH_ROUTES}/add-profile-image`,
   REMOVE_PROFILE_IMAGE: `${AUTH_ROUTES}/remove-profile-image`,
+  LOGOUT: `${AUTH_ROUTES}/logout`,
 };
 
 export const serverRoutes = Object.freeze(_serverRoutes);
