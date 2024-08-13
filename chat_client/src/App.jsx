@@ -7,9 +7,17 @@ import { useEffect, useState } from "react";
 import apiClient from "./lib/api-client";
 import { serverRoutes } from "./utils/constants";
 
+// Helper function to get cookie value
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+};
+
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
   const isAuthenticated = !!userInfo;
+
   return isAuthenticated ? children : <Navigate to={"/auth"} />;
 };
 
@@ -20,13 +28,22 @@ const AuthRoute = ({ children }) => {
 };
 
 const App = () => {
-  const { userInfo, setUserInfo } = useAppStore();
+  const { setUserInfo } = useAppStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const accessToken = getCookie("accessToken");
+    if (!accessToken) {
+      setLoading(false);
+      return;
+    }
+
     const getUserdata = async () => {
       try {
         const response = await apiClient.get(serverRoutes.GET_USER_INFO, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
           withCredentials: true,
         });
 
@@ -35,20 +52,15 @@ const App = () => {
         } else {
           setUserInfo(undefined);
         }
-
-        console.log("this is user response ", response);
       } catch (error) {
         setUserInfo(undefined);
-        console.log(error);
+        console.log("Failed to fetch user info:", error);
       } finally {
         setLoading(false);
       }
     };
-    if (userInfo) {
-      getUserdata();
-    } else {
-      setLoading(false);
-    }
+
+    getUserdata();
   }, [setUserInfo]);
 
   if (loading) {

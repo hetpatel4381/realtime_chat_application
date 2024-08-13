@@ -65,7 +65,7 @@ const logIn = async (req, res) => {
     const loggedInUser = await User.findById(validUser._id).select("-password");
 
     const options = {
-      httpOnly: true,
+      // httpOnly: true,
       secure: true,
     };
 
