@@ -48,6 +48,11 @@ const NewDM = () => {
     }
   };
 
+  const selectNewContact = (contact) => {
+    setOpenNewContactModal(false);
+    setSearchedContacts([]);
+  };
+
   return (
     <>
       <TooltipProvider>
@@ -84,6 +89,7 @@ const NewDM = () => {
                   <div
                     key={contact._id}
                     className="flex gap-3 items-center cursor-pointer"
+                    onClick={() => selectNewContact(contact)}
                   >
                     <div className="w-12 h-12 relative">
                       <Avatar className="w-12 h-12 rounded-full overflow-hidden">
