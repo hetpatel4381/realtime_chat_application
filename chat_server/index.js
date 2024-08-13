@@ -4,6 +4,7 @@ import { config } from "./config/index.js";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 connectDB();
 
@@ -24,6 +25,7 @@ app.use(express.json());
 
 // All Main Routes.
 app.use("/api/auth", userRoutes);
+app.use("/api/contacts", contactRoutes);
 
 app.listen(config.port, () => {
   console.log(`Server running on  http://localhost:${config.port}`);
