@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
+import setupSocket from "./socket.js";
 
 connectDB();
 
@@ -27,6 +28,8 @@ app.use(express.json());
 app.use("/api/auth", userRoutes);
 app.use("/api/contacts", contactRoutes);
 
-app.listen(config.port, () => {
+const server = app.listen(config.port, () => {
   console.log(`Server running on  http://localhost:${config.port}`);
 });
+
+setupSocket(server);
