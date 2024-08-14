@@ -1,6 +1,9 @@
 import { Router } from "express";
 import verifyJWT from "../middlewares/authMiddleware.js";
-import { searchContacts } from "../controllers/contactsController.js";
+import {
+  getContactsForDMList,
+  searchContacts,
+} from "../controllers/contactsController.js";
 
 const contactRouter = Router();
 

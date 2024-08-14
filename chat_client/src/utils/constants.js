@@ -11,7 +11,10 @@ const _serverRoutes = {
   ADD_PROFILE_IMAGE: `${AUTH_ROUTES}/add-profile-image`,
   REMOVE_PROFILE_IMAGE: `${AUTH_ROUTES}/remove-profile-image`,
   LOGOUT: `${AUTH_ROUTES}/logout`,
+
   SEARCH_CONTACTS: `${CONTACTS_ROUTES}/search`,
+  GET_DM_CONTACTS: `${CONTACTS_ROUTES}/get-contacts-for-dm`,
+
   GET_ALL_MESSAGES_ROUTE: `${MESSAGES_ROUTES}/get-messages`,
 };
 

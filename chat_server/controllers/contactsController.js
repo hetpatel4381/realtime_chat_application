@@ -35,6 +35,7 @@ const getContactsForDMList = async (req, res) => {
   try {
     let { userId } = req;
     userId = new mongoose.Types.ObjectId(userId);
+    console.log("this is user id", userId);
 
     const contacts = await Message.aggregate([
       {
@@ -49,12 +50,12 @@ const getContactsForDMList = async (req, res) => {
         $group: {
           _id: {
             $cond: {
-              if: { $eq: ["sender", userId] },
-              then: "recipient",
-              else: "sender",
+              if: { $eq: ["$sender", userId] },
+              then: "$recipient",
+              else: "$sender",
             },
           },
-          lastMessageTime: { $first: $timestamp },
+          lastMessageTime: { $first: "$timestamp" },
         },
       },
       {
@@ -66,7 +67,7 @@ const getContactsForDMList = async (req, res) => {
         },
       },
       {
-        $unwind: "contactInfo",
+        $unwind: "$contactInfo",
       },
       {
         $project: {
