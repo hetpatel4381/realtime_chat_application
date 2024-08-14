@@ -1,18 +1,26 @@
+import apiClient from "@/lib/api-client";
 import { useAppStore } from "@/store";
+import { serverRoutes } from "@/utils/constants";
 import moment from "moment";
 import { useEffect, useRef } from "react";
 
 const MessageContainer = () => {
   const scrollRef = useRef();
-  const { selectedChatType, selectedChatData, userInfo, selectedChatMessages } =
-    useAppStore();
+  const {
+    selectedChatType,
+    selectedChatData,
+    selectedChatMessages,
+    setSelectedChatMessages,
+  } = useAppStore();
 
+  // Function to render messages with date separation
   const renderMessages = () => {
     let lastDate = null;
     return selectedChatMessages.map((message, index) => {
-      const messageDate = moment(message.timestamp).format("YYYY-MM_DD");
+      const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
       const showDate = messageDate !== lastDate;
       lastDate = messageDate;
+
       return (
         <div key={index}>
           {showDate && (
@@ -26,6 +34,7 @@ const MessageContainer = () => {
     });
   };
 
+  // Function to render direct messages based on the sender
   const renderDMMessages = (message) => (
     <div
       className={`${
@@ -49,6 +58,30 @@ const MessageContainer = () => {
     </div>
   );
 
+  // Fetch messages when selected chat changes
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const response = await apiClient.post(
+          serverRoutes.GET_ALL_MESSAGES_ROUTE,
+          { id: selectedChatData._id },
+          { withCredentials: true }
+        );
+
+        if (response.data.messages) {
+          setSelectedChatMessages(response.data.messages);
+        }
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+
+    if (selectedChatData._id) {
+      if (selectedChatType === "contact") getMessages();
+    }
+  }, [selectedChatData._id, selectedChatType, setSelectedChatMessages]);
+
+  // Auto-scroll to the bottom of the message container when new messages are added
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });

@@ -1,5 +1,6 @@
 const AUTH_ROUTES = "api/auth";
 const CONTACTS_ROUTES = "api/contacts";
+const MESSAGES_ROUTES = "api/messages";
 
 const _serverRoutes = {
   AUTH_ROUTES,
@@ -11,6 +12,7 @@ const _serverRoutes = {
   REMOVE_PROFILE_IMAGE: `${AUTH_ROUTES}/remove-profile-image`,
   LOGOUT: `${AUTH_ROUTES}/logout`,
   SEARCH_CONTACTS: `${CONTACTS_ROUTES}/search`,
+  GET_ALL_MESSAGES_ROUTE: `${MESSAGES_ROUTES}/get-messages`,
 };
 
 export const serverRoutes = Object.freeze(_serverRoutes);
