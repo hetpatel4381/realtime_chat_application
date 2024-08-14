@@ -30,7 +30,7 @@ export const SocketProvider = ({ children }) => {
 
         if (
           selectedChatType !== undefined &&
-          (selectedChatData._id === message.sneder._id ||
+          (selectedChatData._id === message.sender._id ||
             selectedChatData._id === message.recipient._id)
         ) {
           addMessage(message);
