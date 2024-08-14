@@ -23,14 +23,29 @@ export const SocketProvider = ({ children }) => {
       socket.current.on("connect", () => {
         console.log("Connected to Socket Server");
       });
-    }
 
-    // here if we directly return without checking if socket.current is there or not then while rendering it will give null value for socket.current.
-    return () => {
-      if (socket.current) {
-        socket.current.disconnect();
-      }
-    };
+      const handlleRecieveMessage = (message) => {
+        const { selectedChatData, selectedChatType, addMessage } =
+          useAppStore.getState();
+
+        if (
+          selectedChatType !== undefined &&
+          (selectedChatData._id === message.sneder._id ||
+            selectedChatData._id === message.recipient._id)
+        ) {
+          addMessage(message);
+        }
+      };
+
+      socket.current.on("recieveMessage", handlleRecieveMessage);
+
+      // here if we directly return without checking if socket.current is there or not then while rendering it will give null value for socket.current.
+      return () => {
+        if (socket.current) {
+          socket.current.disconnect();
+        }
+      };
+    }
   }, [userInfo]);
 
   return (
