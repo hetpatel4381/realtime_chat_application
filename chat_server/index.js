@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import setupSocket from "./socket.js";
+import messagesRoutes from "./routes/messagesRoutes.js";
 
 connectDB();
 
@@ -27,6 +28,7 @@ app.use(express.json());
 // All Main Routes.
 app.use("/api/auth", userRoutes);
 app.use("/api/contacts", contactRoutes);
+app.use("/api/messages", messagesRoutes);
 
 const server = app.listen(config.port, () => {
   console.log(`Server running on  http://localhost:${config.port}`);
