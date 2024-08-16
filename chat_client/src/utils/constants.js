@@ -14,6 +14,7 @@ const _serverRoutes = {
 
   SEARCH_CONTACTS: `${CONTACTS_ROUTES}/search`,
   GET_DM_CONTACTS: `${CONTACTS_ROUTES}/get-contacts-for-dm`,
+  GET_ALL_CONTACTS: `${CONTACTS_ROUTES}/get-all-contacts`,
 
   GET_ALL_MESSAGES_ROUTE: `${MESSAGES_ROUTES}/get-messages`,
   UPLOAD_FILE_ROUTE: `${MESSAGES_ROUTES}/upload-file`,
