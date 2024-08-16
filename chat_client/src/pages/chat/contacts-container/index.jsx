@@ -38,7 +38,7 @@ const ContactsContainer = () => {
           <NewDM />
         </div>
         <div className="max-h-[30vh] overflow-y-auto scrollbar-hidden">
-          <ContactList contacts={directMessagesContacts} />
+          <ContactList contacts={directMessagesContacts}/>
         </div>
       </div>
       <div className="my-5">
