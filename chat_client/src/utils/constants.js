@@ -16,6 +16,7 @@ const _serverRoutes = {
   GET_DM_CONTACTS: `${CONTACTS_ROUTES}/get-contacts-for-dm`,
 
   GET_ALL_MESSAGES_ROUTE: `${MESSAGES_ROUTES}/get-messages`,
+  UPLOAD_FILE_ROUTE: `${MESSAGES_ROUTES}/upload-file`,
 };
 
 export const serverRoutes = Object.freeze(_serverRoutes);
