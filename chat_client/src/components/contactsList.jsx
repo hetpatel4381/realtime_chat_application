@@ -65,7 +65,7 @@ const ContactList = ({ contacts, isChannel = false }) => {
               </div>
             )}
             {isChannel ? (
-              <span>{contact.email}</span>
+              <span>{contact.name}</span>
             ) : (
               <span>{`${contact.firstName} ${contact.lastName}`}</span>
             )}

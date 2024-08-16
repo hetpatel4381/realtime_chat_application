@@ -21,6 +21,7 @@ const _serverRoutes = {
   UPLOAD_FILE_ROUTE: `${MESSAGES_ROUTES}/upload-file`,
 
   CREATE_CHANNEL_ROUTE: `${CHANNEL_ROUTES}/create-channel`,
+  GET_USER_CHANNELS_ROUTE: `${CHANNEL_ROUTES}/get-user-channels`,
 };
 
 export const serverRoutes = Object.freeze(_serverRoutes);

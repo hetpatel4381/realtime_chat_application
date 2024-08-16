@@ -38,8 +38,10 @@ const getUserChannels = async (req, res) => {
       $or: [{ admin: userId }, { members: userId }],
     }).sort({ updatedAt: -1 });
 
-    return res.status(200).json({ channel: newChannel });
+    return res.status(200).json({ channel: channels });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).send("Internal Server Error!");
   }
 };
