@@ -1,6 +1,7 @@
 const AUTH_ROUTES = "api/auth";
 const CONTACTS_ROUTES = "api/contacts";
 const MESSAGES_ROUTES = "api/messages";
+const CHANNEL_ROUTES = "api/channel";
 
 const _serverRoutes = {
   AUTH_ROUTES,
@@ -18,6 +19,8 @@ const _serverRoutes = {
 
   GET_ALL_MESSAGES_ROUTE: `${MESSAGES_ROUTES}/get-messages`,
   UPLOAD_FILE_ROUTE: `${MESSAGES_ROUTES}/upload-file`,
+
+  CREATE_CHANNEL_ROUTE: `${CHANNEL_ROUTES}/create-channel`,
 };
 
 export const serverRoutes = Object.freeze(_serverRoutes);

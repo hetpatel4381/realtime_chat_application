@@ -15,20 +15,16 @@ import {
   // DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import Lottie from "react-lottie";
-import { animationDefaultOptions, getColor } from "@/lib/utils";
 import apiClient from "@/lib/api-client";
 import { serverRoutes } from "@/utils/constants";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useAppStore } from "@/store";
 import { Button } from "@/components/ui/button";
 import MultipleSelector from "@/components/ui/multipleselect";
 
 const CreateChannel = () => {
-  const { setSelectedChatType, setSelectedChatData } = useAppStore();
+  const { setSelectedChatType, setSelectedChatData, addChannel } =
+    useAppStore();
   const [newChannelModal, setNewChannelModal] = useState(false);
-  const [searchedContacts, setSearchedContacts] = useState([]);
   const [allContacts, setAllContacts] = useState([]);
   const [selectedContacts, setSelectedContacts] = useState([]);
   const [channelName, setChannelName] = useState("");
@@ -45,7 +41,29 @@ const CreateChannel = () => {
     getData();
   }, []);
 
-  const createChannel = async () => {};
+  const createChannel = async () => {
+    try {
+      if (channelName.length > 0 && selectedContacts.length > 0) {
+        const response = await apiClient.post(
+          serverRoutes.CREATE_CHANNEL_ROUTE,
+          {
+            name: channelName,
+            members: selectedContacts.map((contact) => contact.value),
+          },
+          { withCredentials: true }
+        );
+
+        if (response.status === 201) {
+          setChannelName("");
+          setSelectedContacts([]);
+          setNewChannelModal(false);
+          addChannel(response.data.channel);
+        }
+      }
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
   return (
     <>
@@ -85,9 +103,11 @@ const CreateChannel = () => {
               defaultOptions={allContacts}
               placeholder="Search Contacts"
               value={selectedContacts}
-              onChange={setSearchedContacts}
+              onChange={setSelectedContacts}
               emptyIndicator={
-                <p className="text-center text-lg leading-10 text-gray-600">No results found!</p>
+                <p className="text-center text-lg leading-10 text-gray-600">
+                  No results found!
+                </p>
               }
             />
           </div>
