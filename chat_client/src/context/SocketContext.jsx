@@ -1,6 +1,6 @@
 import { useAppStore } from "@/store";
 import { config } from "@/utils/config";
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
 const SocketContext = createContext(null);
@@ -10,11 +10,12 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }) => {
-  const socket = useRef();
+  const socket = useRef(null);
   const { userInfo } = useAppStore();
+  const [isSocketInitialized, setIsSocketInitialized] = useState(false);
 
   useEffect(() => {
-    if (userInfo) {
+    if (userInfo && !socket.current) {
       socket.current = io(config.serverOrigin, {
         withCredentials: true,
         query: { userId: userInfo.id },
@@ -22,9 +23,10 @@ export const SocketProvider = ({ children }) => {
 
       socket.current.on("connect", () => {
         console.log("Connected to Socket Server");
+        setIsSocketInitialized(true);
       });
 
-      const handlleRecieveMessage = (message) => {
+      const handleReceiveMessage = (message) => {
         const { selectedChatData, selectedChatType, addMessage } =
           useAppStore.getState();
 
@@ -37,19 +39,32 @@ export const SocketProvider = ({ children }) => {
         }
       };
 
-      socket.current.on("recieveMessage", handlleRecieveMessage);
+      const handleReceiveChannelMessage = (message) => {
+        const { selectedChatData, selectedChatType, addMessage } =
+          useAppStore.getState();
 
-      // here if we directly return without checking if socket.current is there or not then while rendering it will give null value for socket.current.
+        if (
+          selectedChatType !== undefined &&
+          selectedChatData._id === message.channelId
+        ) {
+          addMessage(message);
+        }
+      };
+
+      socket.current.on("recieveMessage", handleReceiveMessage);
+      socket.current.on("receive-channel-message", handleReceiveChannelMessage);
+
       return () => {
         if (socket.current) {
           socket.current.disconnect();
+          socket.current = null; // Ensure socket is reset on unmount
         }
       };
     }
   }, [userInfo]);
 
   return (
-    <SocketContext.Provider value={socket.current}>
+    <SocketContext.Provider value={isSocketInitialized ? socket.current : null}>
       {children}
     </SocketContext.Provider>
   );

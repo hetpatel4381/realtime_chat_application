@@ -44,41 +44,41 @@ const setupSocket = (server) => {
   };
 
   const sendChannelMessage = async (message) => {
-    const { channelId, sender, content, messageType, fileUrl } = message;
+    try {
+      const { channelId, sender, content, messageType, fileUrl } = message;
 
-    const createdMessage = await Message.create({
-      sender,
-      recipient: null,
-      content,
-      messageType,
-      timestamp: new Date(),
-      fileUrl,
-    });
-
-    const messageData = await Message.findById(createdMessage._id)
-      .populate("sender", "id email firstName lastName image color")
-      .exec();
-
-    await Channel.findByIdAndUpdate(channelId, {
-      $push: { message: createdMessage._id },
-    });
-
-    const channel = await Channel.findById(channelId).populate("members");
-
-    const finalData = { ...messageData._id, channelId: channel._id };
-
-    if (channel && channel.members) {
-      channel.members.forEach((member) => {
-        const memberSocketId = userSocketMap.get(member._id.toString());
-        if (memberSocketId) {
-          io.to(memberSocketId).emit("receive-channel-message", finalData);
-        }
-
-        const adminSocketId = userSocketMap.get(channel.admin._id.toString());
-        if (adminSocketId) {
-          io.to(adminSocketId).emit("receive-channel-message", finalData);
-        }
+      // Create the message with channelId
+      const createdMessage = await Message.create({
+        sender,
+        channelId,
+        content,
+        messageType,
+        timestamp: new Date(),
+        fileUrl,
       });
+
+      // Populate sender information
+      const messageData = await Message.findById(createdMessage._id)
+        .populate("sender", "id email firstName lastName image color")
+        .exec();
+
+      // Fetch channel members
+      const channel = await Channel.findById(channelId).populate(
+        "members admin"
+      );
+
+      // Emit the message to all channel members
+      if (channel) {
+        const recipients = [...channel.members, channel.admin];
+        recipients.forEach((member) => {
+          const memberSocketId = userSocketMap.get(member._id.toString());
+          if (memberSocketId) {
+            io.to(memberSocketId).emit("receive-channel-message", messageData);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error sending channel message:", error);
     }
   };
 

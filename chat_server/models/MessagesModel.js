@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
@@ -10,28 +10,34 @@ const messageSchema = new mongoose.Schema(
     recipient: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: false,
+      default: null,
+    },
+    channelId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Channel",
+      default: null,
     },
     messageType: {
       type: String,
       enum: ["text", "file"],
-      required: true,
+      default: "text",
     },
     content: {
       type: String,
-      required: function () {
-        return this.messageType === "text";
-      },
+      default: "",
     },
     fileUrl: {
       type: String,
-      required: function () {
-        return this.messageType === "file";
-      },
+      default: "",
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now,
     },
   },
   { timestamps: true }
 );
 
 const Message = mongoose.model("Message", messageSchema);
+
 export default Message;

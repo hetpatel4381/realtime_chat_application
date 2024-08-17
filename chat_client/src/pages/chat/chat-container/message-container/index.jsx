@@ -7,10 +7,14 @@ import { useEffect, useRef, useState } from "react";
 import { MdFolderZip } from "react-icons/md";
 import { IoMdArrowRoundDown } from "react-icons/io";
 import { IoCloseSharp } from "react-icons/io5";
+import { getColor } from "@/lib/utils";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 
 const MessageContainer = () => {
   const scrollRef = useRef();
   const {
+    userInfo,
     selectedChatType,
     selectedChatData,
     selectedChatMessages,
@@ -56,6 +60,7 @@ const MessageContainer = () => {
   const renderMessages = () => {
     let lastDate = null;
     return selectedChatMessages.map((message, index) => {
+      console.log(message.sender === selectedChatData._id);
       const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
       const showDate = messageDate !== lastDate;
       lastDate = messageDate;
@@ -68,6 +73,7 @@ const MessageContainer = () => {
             </div>
           )}
           {selectedChatType === "contact" && renderDMMessages(message)}
+          {selectedChatType === "channel" && renderChannelMessages(message)}
         </div>
       );
     });
@@ -136,6 +142,58 @@ const MessageContainer = () => {
     </div>
   );
 
+  const renderChannelMessages = (message) => {
+    return (
+      <div
+        className={`${
+          message.sender._id !== userInfo.id ? "text-left" : "text-right"
+        }`}
+      >
+        {message.messageType === "text" && (
+          <div
+            className={`${
+              message.sender._id === userInfo.id
+                ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
+                : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20"
+            } border inline-block p-4 rounded my-1 max-w-[50%] break-words ml-9`}
+          >
+            {message.content}
+          </div>
+        )}
+        {message.sender._id !== userInfo.id ? (
+          <div className="flex items-center justify-start gap-3">
+            <Avatar className="w-8 h-8 rounded-full overflow-hidden">
+              {message.sender.image && (
+                <AvatarImage
+                  src={`${config.serverOrigin}/${message.sender.image}`}
+                  alt="profile"
+                  className="object-cover w-full h-full bg-black"
+                />
+              )}
+              <AvatarFallback
+                className={`uppercase w-8 h-8 text-lg flex items-center justify-center rounded-full ${getColor(
+                  message.sender.color
+                )}`}
+              >
+                {message.sender.firstName
+                  ? message.sender.firstName.split("").shift()
+                  : message.sender.email}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-sm text-white/60">{`${message.sender.firstName} ${message.sender.lastName}`}</span>
+            <span className="text-sm text-white/60">
+              {moment(message.timestamp).format("LT")}
+            </span>
+          </div>
+        ) : (
+          <div className="text-sm text-white/60 mt-1">
+            {moment(message.timestamp).format("LT")}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Fetch messages when selected chat changes
   useEffect(() => {
     const getMessages = async () => {
@@ -155,7 +213,11 @@ const MessageContainer = () => {
     };
 
     if (selectedChatData._id) {
-      if (selectedChatType === "contact") getMessages();
+      if (selectedChatType === "contact") {
+        getMessages();
+      } else if (selectedChatType === "channel") {
+        getMessages();
+      }
     }
   }, [selectedChatData._id, selectedChatType, setSelectedChatMessages]);
 
@@ -181,18 +243,18 @@ const MessageContainer = () => {
             <div className="flex gap-5 fixed top-0 mt-5">
               <button
                 className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
-                onClick={() => downloadFile(imageURL)}
-              >
-                <IoMdArrowRoundDown />
-              </button>
-              <button
-                className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
                 onClick={() => {
                   setShowImage(false);
                   setImageURL(null);
                 }}
               >
                 <IoCloseSharp />
+              </button>
+              <button
+                className="bg-black/20 p-3 text-2xl rounded-full hover:bg-black/50 cursor-pointer transition-all duration-300"
+                onClick={() => downloadFile(imageURL)}
+              >
+                <IoMdArrowRoundDown />
               </button>
             </div>
           </div>

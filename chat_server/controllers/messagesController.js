@@ -13,8 +13,11 @@ const getMessages = async (req, res) => {
       $or: [
         { sender: user1, recipient: user2 },
         { sender: user2, recipient: user1 },
+        { channelId: user2 },
       ],
-    }).sort({ timestamp: 1 });
+    })
+      .populate("sender", "firstName lastName email image color")
+      .sort({ timestamp: 1 });
 
     return res.status(200).json({ messages });
   } catch (error) {
