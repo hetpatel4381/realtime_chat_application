@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const channelSchema = new mongoose.Schema({
   name: {
@@ -8,7 +8,7 @@ const channelSchema = new mongoose.Schema({
   members: [{ type: mongoose.Types.ObjectId, ref: "User", required: true }],
   admin: { type: mongoose.Types.ObjectId, ref: "User", required: true },
   messages: [
-    { type: mongoose.Types.ObjectId, ref: "Messages", required: false },
+    { type: mongoose.Types.ObjectId, ref: "Message", required: false },
   ],
   createdAt: {
     type: Date,

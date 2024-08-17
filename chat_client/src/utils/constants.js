@@ -22,6 +22,7 @@ const _serverRoutes = {
 
   CREATE_CHANNEL_ROUTE: `${CHANNEL_ROUTES}/create-channel`,
   GET_USER_CHANNELS_ROUTE: `${CHANNEL_ROUTES}/get-user-channels`,
+  GET_CHANNEL_MESSAGES: `${CHANNEL_ROUTES}/get-channel-messages`,
 };
 
 export const serverRoutes = Object.freeze(_serverRoutes);

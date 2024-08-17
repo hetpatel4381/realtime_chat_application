@@ -7,14 +7,18 @@ const createChannel = async (req, res) => {
     const { name, members } = req.body;
     const userId = req.userId;
 
+    if (!name || !members || !Array.isArray(members) || members.length === 0) {
+      return res.status(400).send("Channel name and members are required!");
+    }
+
     const admin = await User.findById(userId);
     if (!admin) {
-      return res.status(400).send("Admin not Found!");
+      return res.status(404).send("Admin not found!");
     }
 
     const validMembers = await User.find({ _id: { $in: members } });
     if (validMembers.length !== members.length) {
-      return res.status(400).send("Some Members are not Valid Users!");
+      return res.status(400).send("Some members are not valid users!");
     }
 
     const newChannel = new Channel({
@@ -27,21 +31,22 @@ const createChannel = async (req, res) => {
 
     return res.status(201).json({ channel: newChannel });
   } catch (error) {
+    console.error("Error creating channel:", error);
     return res.status(500).send("Internal Server Error!");
   }
 };
 
 const getUserChannels = async (req, res) => {
   try {
-    const userId = new mongoose.Types.ObjectId(req.userId);
+    const userId = req.userId;
+
     const channels = await Channel.find({
       $or: [{ admin: userId }, { members: userId }],
     }).sort({ updatedAt: -1 });
 
-    return res.status(200).json({ channel: channels });
+    return res.status(200).json({ channels });
   } catch (error) {
-    console.log(error);
-
+    console.error("Error fetching user channels:", error);
     return res.status(500).send("Internal Server Error!");
   }
 };
@@ -49,24 +54,24 @@ const getUserChannels = async (req, res) => {
 const getChannelMessages = async (req, res) => {
   try {
     const { channelId } = req.params;
+
     const channel = await Channel.findById(channelId).populate({
       path: "messages",
-      populat: {
+      populate: {
         path: "sender",
         select: "firstName lastName _id email image color",
       },
     });
 
     if (!channel) {
-      return res.status(404).send("Channel not Found!");
+      return res.status(404).send("Channel not found!");
     }
 
     const messages = channel.messages;
-    
+
     return res.status(200).json({ messages });
   } catch (error) {
-    console.log(error);
-
+    console.error("Error fetching channel messages:", error);
     return res.status(500).send("Internal Server Error!");
   }
 };

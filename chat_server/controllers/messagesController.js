@@ -1,12 +1,21 @@
 import Message from "../models/MessagesModel.js";
 import { mkdirSync, renameSync } from "fs";
+import mongoose from "mongoose";
 
 const getMessages = async (req, res) => {
   try {
     const user1 = req.userId;
     const user2 = req.body.id;
+
     if (!user1 || !user2) {
-      return res.status(400).send("User Id's are required!");
+      return res.status(400).send("Both User IDs are required!");
+    }
+
+    if (
+      !mongoose.Types.ObjectId.isValid(user1) ||
+      !mongoose.Types.ObjectId.isValid(user2)
+    ) {
+      return res.status(400).send("Invalid User ID(s)!");
     }
 
     const messages = await Message.find({
@@ -21,7 +30,8 @@ const getMessages = async (req, res) => {
 
     return res.status(200).json({ messages });
   } catch (error) {
-    return res.status(500).send("Error while Fetcing all Messages!");
+    console.error("Error fetching messages:", error);
+    return res.status(500).send("Error while fetching all messages!");
   }
 };
 
@@ -32,8 +42,8 @@ const uploadFile = async (req, res) => {
     }
 
     const date = Date.now();
-    const fileDir = `uploads/files/${date}`;
-    const fileName = `${fileDir}/${req.file.originalname}`;
+    const fileDir = path.join("uploads", "files", `${date}`);
+    const fileName = path.join(fileDir, req.file.originalname);
 
     mkdirSync(fileDir, { recursive: true });
 
@@ -41,7 +51,8 @@ const uploadFile = async (req, res) => {
 
     return res.status(200).json({ filePath: fileName });
   } catch (error) {
-    return res.status(500).send("Internal server error!");
+    console.error("Error during file upload:", error);
+    return res.status(500).send("Internal server error during file upload!");
   }
 };
 

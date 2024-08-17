@@ -251,11 +251,30 @@ const MessageContainer = () => {
       }
     };
 
+    const getChannelMessages = async () => {
+      try {
+        console.log("this is inside frontend getchannelmessages");
+
+        const response = await apiClient.get(
+          `${serverRoutes.GET_CHANNEL_MESSAGES}/${selectedChatData._id}`,
+          { withCredentials: true }
+        );
+
+        console.log("This is response", response);
+
+        if (response.data.messages) {
+          setSelectedChatMessages(response.data.messages);
+        }
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+
     if (selectedChatData._id) {
       if (selectedChatType === "contact") {
         getMessages();
       } else if (selectedChatType === "channel") {
-        getMessages();
+        getChannelMessages();
       }
     }
   }, [selectedChatData._id, selectedChatType, setSelectedChatMessages]);

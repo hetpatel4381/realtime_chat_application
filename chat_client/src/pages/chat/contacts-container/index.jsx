@@ -38,9 +38,8 @@ const ContactsContainer = () => {
             withCredentials: true,
           }
         );
-
-        if (response.data.channel) {
-          setChannels(response.data.channel);
+        if (response.data.channels) {
+          setChannels(response.data.channels);
         }
       } catch (error) {
         console.log({ error });

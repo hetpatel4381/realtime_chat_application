@@ -46,8 +46,6 @@ const setupSocket = (server) => {
   const sendChannelMessage = async (message) => {
     try {
       const { channelId, sender, content, messageType, fileUrl } = message;
-
-      // Create the message with channelId
       const createdMessage = await Message.create({
         sender,
         channelId,
@@ -57,19 +55,24 @@ const setupSocket = (server) => {
         fileUrl,
       });
 
+      // Update the channel to include the new message
+      await Channel.findByIdAndUpdate(channelId, {
+        $push: { messages: createdMessage._id },
+      });
+
       // Populate sender information
       const messageData = await Message.findById(createdMessage._id)
         .populate("sender", "id email firstName lastName image color")
         .exec();
 
-      // Fetch channel members
+      // Fetch channel details including members and admin
       const channel = await Channel.findById(channelId).populate(
-        "members admin"
+        "members admin messages"
       );
-
-      // Emit the message to all channel members
+      
       if (channel) {
-        const recipients = [...channel.members, channel.admin];
+        const recipients = new Set([...channel.members, channel.admin]);
+
         recipients.forEach((member) => {
           const memberSocketId = userSocketMap.get(member._id.toString());
           if (memberSocketId) {
