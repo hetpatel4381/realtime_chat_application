@@ -60,7 +60,6 @@ const MessageContainer = () => {
   const renderMessages = () => {
     let lastDate = null;
     return selectedChatMessages.map((message, index) => {
-      console.log(message.sender === selectedChatData._id);
       const messageDate = moment(message.timestamp).format("YYYY-MM-DD");
       const showDate = messageDate !== lastDate;
       lastDate = messageDate;
@@ -83,13 +82,13 @@ const MessageContainer = () => {
   const renderDMMessages = (message) => (
     <div
       className={`${
-        message.sender === selectedChatData._id ? "text-left" : "text-right"
+        message.sender._id === selectedChatData._id ? "text-left" : "text-right"
       }`}
     >
       {message.messageType === "text" && (
         <div
           className={`${
-            message.sender !== selectedChatData._id
+            message.sender._id !== selectedChatData._id
               ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
               : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20"
           } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
@@ -100,7 +99,7 @@ const MessageContainer = () => {
       {message.messageType === "file" && (
         <div
           className={`${
-            message.sender !== selectedChatData._id
+            message.sender._id !== selectedChatData._id
               ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
               : "bg-[#2a2b33]/5 text-white/80 border-[#ffffff]/20"
           } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
@@ -253,14 +252,10 @@ const MessageContainer = () => {
 
     const getChannelMessages = async () => {
       try {
-        console.log("this is inside frontend getchannelmessages");
-
         const response = await apiClient.get(
           `${serverRoutes.GET_CHANNEL_MESSAGES}/${selectedChatData._id}`,
           { withCredentials: true }
         );
-
-        console.log("This is response", response);
 
         if (response.data.messages) {
           setSelectedChatMessages(response.data.messages);
